@@ -1,10 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Usermodel = require("./model/Usermodel")
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const {errorHandler} = require('./middleware/errorMiddleware')
 
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cors());
+app.use(cookieParser())
+app.use(errorHandler)
 
 mongoose.connect('mongodb://127.0.0.1:27017/hyev');
 
@@ -14,12 +21,8 @@ db.once("open", function () {
   console.log("Connected successfully");
 });
 
-app.post('/',async (req,res) => {
-    const user = new Usermodel({username:"sandeepnaik",password:'sandeep',name:'R Sai Sandeep',phnum:8885450415,age:23})
-    // res.send(user.validate())
-    const val = await user.validate()
-    console.log(req.body)
-    res.send("Hello")
-})
+app.use('/api/users', require('./Routes/userRoutes'))
+
+
 
 app.listen('8000')
