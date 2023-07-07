@@ -18,7 +18,7 @@ const EventSchema = Schema({
     hostemail:{type: String},
     contactNumber: {type: Number},
     company: {type: String},
-    title: {type: String},
+    eventTitle: {type: String},
     description:{type: String},
     imgs: {type: Array},
     banner: {type: String},
@@ -30,7 +30,7 @@ const EventSchema = Schema({
     eventType: {type: Array},
     eventTable: [{
         events: String,
-        price: {type: String},
+        price: Number,
     }],
     comments: [commentSchema],
     user: {
@@ -41,6 +41,10 @@ const EventSchema = Schema({
         facebook: { type: String, default: null },
         twitter: {type: String, default: null},
         insta: {type: String, default: null},
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false,
     }
 });
 

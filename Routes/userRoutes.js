@@ -10,6 +10,6 @@ router.post('/login', loginUser);
 
 router.post('/logout', logoutUser);
 
-router.route('/profile').get(protect, userData).put(protect, updateprof);
+router.route('/profile').get(protect,userData).put(protect, updateprof);
 
 module.exports = router
