@@ -17,11 +17,6 @@ const storage = multer.diskStorage({
 
 const uploadMiddleware = multer({ storage });
 
-// const uploadImgs = uploadMiddleware.array('imgs', 3);
-// const uploadBanner = uploadMiddleware.single('banner');
-// const createNewEvent =  (req, res) => {
-//     console.log(req.body);
-// }
 
 const uploadFields = uploadMiddleware.fields([
     { name: 'imgs', maxCount: 3 },
@@ -34,20 +29,21 @@ const createNewEvent = asyncHandler(async (req, res) => {
         if (err) {
             console.log(err);
         }
-        console.log(req.body, 'first');
+        // console.log(req.body, 'first');
 
         // console.log(req.body.eventType || 'nope');
         const eventsList = req.body.eventsList;
         // const eventsList = JSON.parse(req.body.eventsList);
         const eventType = req.body.eventType;
+        const eventCategories = eventType.split(',')
         const socials = JSON.parse(req.body.socials);
-        console.log(socials.fb || 'nah');
-        const { name, email, phone, org} = req.body;
-        console.log(name, 'test');
-        console.log(req.body, 'banner');
+        console.log(socials.fb , socials.insta || 'nah');
+
+        console.log(req.files.banner[0], 'banner');
+
         // console.log(req.files);
         const response = await Event.create({
-            hostname: name,
+            hostname: req.body.name,
             hostemail: req.body.email,
             contactNumber: req.body.phone,
             company: req.body.org,
@@ -55,18 +51,19 @@ const createNewEvent = asyncHandler(async (req, res) => {
             eventTitle: req.body.eventTitle || "EVENT TITLE",
             description: req.body.desc,
             imgs: req.files?.imgs?.map(file => file.path),
-            banner: req.file?.path,
+            banner: req.files?.banner[0].path,
             date: req.body.date,
-            hour: req.body.hour,
-            min: req.body.min,
+            // hour: req.body.hour,
+            // min: req.body.min,
+            time: req.body.time,
             location: req.body.location,
-            eventType: eventType,
+            eventType: eventCategories,
 
             eventTable: eventsList,
             seats: req.body.seats,
             socials: {
                 facebook: socials.fb,
-                instagram: socials.insta,
+                insta: socials.insta,
                 twitter: socials.twt
             },
         }
@@ -78,20 +75,35 @@ const createNewEvent = asyncHandler(async (req, res) => {
     });
 });
 
-// document.querySelector('input[placeholder="Title"]').value = 'FirstEvent79';
-// document.querySelector('textarea[placeholder="Description"]').value = '11th hyev event';
-// document.querySelector('input[placeholder="Date: dd/mm/yyyy"]').value = '07/07/2023';
-// document.querySelector('textarea[placeholder="Location"]').value = 'Volta hotel Moghalpura';
-// document.querySelector('input[placeholder="Name"]').value = 'muz';
-// document.querySelector('input[placeholder="Email"]').value = 'muz@gmail.com';
-// document.querySelector('input[placeholder="Phone Number"]').value = '7897897899';
-// document.querySelector('input[placeholder="Company/College/Organization"]').value = 'mj';
-// document.querySelector('input[placeholder="Number of seats"]').value = '100';
-// document.querySelector('input[placeholder="Facebook handle"]').value = 'muzfb';
-// document.querySelector('input[placeholder="Instagram handle"]').value = 'muzinsta';
-// document.querySelector('input[placeholder="Twitter handle"]').value = 'muztwt';document.querySelector('input[class^="time-input"]').value = '12';
-// document.querySelectorAll('input[class^="time-input"]')[1].value = '56'; 
+
+const getEvents = asyncHandler(async(req, res) => {
+    const response = await Event.find();
+    res.status(200).json(response); 
+});
+
+const getEvent = asyncHandler(async(req, res) => {
+    const {id} = req.params;
+    console.log(id);
+    const response = await Event.findById(id);
+    res.status(200).json(response);
+});
 
 module.exports = {
-    createNewEvent
+    createNewEvent,
+    getEvents, 
+    getEvent
 } 
+
+// document.querySelector('input[placeholder="Host Name"]').value = 'John Doe';
+// document.querySelector('input[placeholder="Email"]').value = 'johndoe@example.com';
+// document.querySelector('input[placeholder="Phone Number"]').value = '1234567890';
+// document.querySelector('input[placeholder="Company/College/Organization"]').value = 'Your Organization';
+// document.querySelector('input[placeholder="Title"]').value = 'My Event Title';
+// document.querySelector('textarea[placeholder="Description"]').value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+// document.querySelector('textarea[placeholder="Location"]').value = 'New York';
+// document.querySelector('input[placeholder="Date: dd/mm/yyyy"]').value = '10/12/2022';
+// document.querySelector('input[type="time"]').value = '13:30';
+// document.querySelector('input[placeholder="Facebook handle"]').value = 'socials';
+// document.querySelector('input[placeholder="Instagram handle"]').value = 'socials';
+// document.querySelector('input[placeholder="Twitter handle"]').value = 'socials';
+// document.querySelector('input[placeholder="Number of seats"]').value = '2000'; 
