@@ -13,6 +13,8 @@ app.use(cors({
   credentials: true, // Allow credentials (cookies)
 }));
 app.use('/uploads', express.static(__dirname + '/uploads'));
+app.use('/eventUploads', express.static(__dirname + '/eventUploads'));
+
 app.use(cookieParser())
 app.use(errorHandler)
 
