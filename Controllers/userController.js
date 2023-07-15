@@ -62,9 +62,8 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('User invalid')
     }
 })
-// pass: 723hshds
-//username: muzzz1
-//email: mam77am@gmail.com
+
+
 const loginUser = asyncHandler(async (req, res) => {
     const { username, password } = req.body
     const user = await User.findOne({ username })
@@ -91,7 +90,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 })
 
 const userData = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user.id).select('_id username bio name email userPFP');
+    const user = await User.findById(req.user.id).select('_id username bio name email userPFP isHost');
     res.status(200).json(user)
 })
 

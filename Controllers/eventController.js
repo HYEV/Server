@@ -29,19 +29,14 @@ const createNewEvent = asyncHandler(async (req, res) => {
         if (err) {
             console.log(err);
         }
-        // console.log(req.body, 'first');
-
-        // console.log(req.body.eventType || 'nope');
-        const eventsList = req.body.eventsList;
-        // const eventsList = JSON.parse(req.body.eventsList);
+        // console.log(req.body.socials.fb, 'first');
         const eventType = req.body.eventType;
-        const eventCategories = eventType.split(',')
+        const eventCategories = eventType.split(',');
         const socials = JSON.parse(req.body.socials);
         console.log(socials.fb , socials.insta || 'nah');
+        const eventTable = JSON.parse(req.body.eventTable);
+        console.log(eventTable);
 
-        console.log(req.files.banner[0], 'banner');
-
-        // console.log(req.files);
         const response = await Event.create({
             hostname: req.body.name,
             hostemail: req.body.email,
@@ -53,13 +48,11 @@ const createNewEvent = asyncHandler(async (req, res) => {
             imgs: req.files?.imgs?.map(file => file.path),
             banner: req.files?.banner[0].path,
             date: req.body.date,
-            // hour: req.body.hour,
-            // min: req.body.min,
             time: req.body.time,
             location: req.body.location,
             eventType: eventCategories,
 
-            eventTable: eventsList,
+            eventTable: eventTable,
             seats: req.body.seats,
             socials: {
                 facebook: socials.fb,
@@ -68,7 +61,6 @@ const createNewEvent = asyncHandler(async (req, res) => {
             },
         }
         );
-        // console.log(response);
         if (response) {
             res.status(201).json(response);
         }
@@ -79,7 +71,7 @@ const createNewEvent = asyncHandler(async (req, res) => {
 const getEvents = asyncHandler(async(req, res) => {
     const response = await Event.find();
     res.status(200).json(response); 
-});
+});  
 
 const getEvent = asyncHandler(async(req, res) => {
     const {id} = req.params;
@@ -87,7 +79,7 @@ const getEvent = asyncHandler(async(req, res) => {
     const response = await Event.findById(id);
     res.status(200).json(response);
 });
-
+ 
 module.exports = {
     createNewEvent,
     getEvents, 
